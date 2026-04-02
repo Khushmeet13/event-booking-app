@@ -19,7 +19,7 @@ export const EVENTS = [
       earlyBirdEnds: "Apr 20, 2025",
     },
     rows: ["A", "B", "C", "D", "E", "F"],
-    seatsPerRow: 10,
+    seatsPerRow: 20,
     vipRows: ["A", "B"],
     bookedSeats: ["A1","A4","B2","B7","C3","C8","D5","E1","E9","F2","F6"],
   },

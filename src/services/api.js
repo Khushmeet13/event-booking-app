@@ -190,7 +190,7 @@ export function normalizeTMEvent(ev) {
     status: ev.dates?.status?.code,
     // Seat map defaults (TM doesn't give seat maps on free tier)
     rows: ["A", "B", "C", "D", "E", "F"],
-    seatsPerRow: 10,
+    seatsPerRow: 20,
     vipRows: ["A", "B"],
     bookedSeats: generateBookedSeats(),
     // Raw TM data preserved

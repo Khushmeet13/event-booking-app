@@ -191,6 +191,8 @@ export default function SeatSelection({ event, cart, onAddToCart, onBack, onView
               })}
             </div>
 
+            
+
             {hoveredSeat && !isBooked(hoveredSeat) && !isInCart(hoveredSeat) && (
               <div className="mt-6 pt-4 border-t border-white/5 flex items-center justify-between">
                 <p className="text-xs text-white/40">
