@@ -1,4 +1,5 @@
 import { useState } from "react";
+import emailjs from "emailjs-com";
 
 const PAYMENT_METHODS = [
   { id: "card", label: "Credit / Debit Card", icon: "💳" },
@@ -6,6 +7,33 @@ const PAYMENT_METHODS = [
   { id: "netbanking", label: "Net Banking", icon: "🏦" },
 ];
 
+const sendEmail = async (tickets, form) => {
+  // console.log("🚀 sendEmail called");
+  // console.log("FORM EMAIL:", form.email);
+
+  try {
+    const res = await emailjs.send(
+      import.meta.env.VITE_EMAIL_SERVICE_ID,
+      import.meta.env.VITE_EMAIL_TEMPLATE_ID,
+      {
+        to_name: form.name,
+        email: form.email,
+        event_name: tickets[0].eventTitle,
+        event_date: tickets[0].date,
+        event_time: tickets[0].time,
+        seats: tickets.map(t => t.seatId).join(", "),
+        payment_id: tickets[0].paymentId,
+      },
+      import.meta.env.VITE_EMAIL_PUBLIC_KEY
+    );
+
+
+    //console.log("✅ Email sent:", res);
+
+  } catch (err) {
+    console.error("❌ Email failed FULL:", err?.text || err);
+  }
+};
 
 const Field = ({ label, id, type = "text", value, onChange, error, placeholder, className = "" }) => (
   <div className={className}>
@@ -71,7 +99,7 @@ export default function Checkout({ cart, onBack, onConfirm }) {
           email: form.email,
           paymentId: response.razorpay_payment_id,
 
-       
+
           qrData: JSON.stringify({
             event: item.eventTitle,
             seat: item.seatId,
@@ -84,7 +112,8 @@ export default function Checkout({ cart, onBack, onConfirm }) {
 
         setLoading(false);
 
-      
+        sendEmail(tickets, form);
+
         onConfirm(tickets);
       },
 
