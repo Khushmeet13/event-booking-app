@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { searchArtists, getArtistProfile, lastfmGetArtist, CONFIG, formatNumber } from "../services/api";
 import { usePaginatedSearch, useDebounce, useAsync } from "../hooks/useApi";
 import { SkeletonGrid, ApiKeyBanner, ErrorState, EmptyState, LoadMoreButton, LiveBadge } from "../components/UI";
+import { FaInstagram, FaTwitter, FaFacebookF, FaYoutube, FaGlobe } from "react-icons/fa";
 
 const GENRE_FILTERS = ["All", "Rock", "Electronic", "Jazz", "Classical", "Pop", "Hip-Hop", "R&B", "Metal"];
 
@@ -51,7 +52,7 @@ export default function Artists() {
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
           <div className="relative">
             <svg viewBox="0 0 24 24" className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 fill-white/25 pointer-events-none">
-              <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+              <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
             </svg>
             <input
               type="text"
@@ -143,7 +144,19 @@ function ArtistCard({ artist, index, onClick }) {
   );
 }
 
+const getExternalLinks = (links = {}) => {
+  return {
+    youtube: links.youtube?.[0]?.url,
+    twitter: links.twitter?.[0]?.url,
+    facebook: links.facebook?.[0]?.url,
+    instagram: links.instagram?.[0]?.url,
+    website: links.homepage?.[0]?.url,
+  };
+};
+
 function ArtistModal({ artist, onClose }) {
+  const external = getExternalLinks(artist.externalLinks);
+
   const { data: enriched, loading } = useAsync(
     () => lastfmGetArtist(artist.name),
     [artist.name]
@@ -162,7 +175,7 @@ function ArtistModal({ artist, onClose }) {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f17] via-[#0f0f17]/30 to-transparent" />
           <button onClick={onClose} className="absolute top-4 right-4 w-8 h-8 rounded-full bg-black/50 border border-white/10 flex items-center justify-center hover:border-white/30 transition-colors">
-            <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white/60"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            <svg viewBox="0 0 24 24" className="w-4 h-4 fill-white/60"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" /></svg>
           </button>
           <div className="absolute bottom-4 left-6">
             <p className="text-[10px] tracking-[0.3em] uppercase text-[#c9a84c] mb-1">{artist.genre}</p>
@@ -211,6 +224,59 @@ function ArtistModal({ artist, onClose }) {
                 {enriched.similar.slice(0, 5).map((s) => (
                   <span key={s} className="text-[10px] px-2 py-1 rounded-lg bg-white/3 border border-white/8 text-white/40">{s}</span>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* External Links */}
+          {Object.values(external).some(Boolean) && (
+            <div>
+              <p className="text-[9px] tracking-[0.3em] uppercase text-white/25 mb-2">
+                Connect
+              </p>
+
+              <div className="flex flex-wrap gap-2">
+
+                {external.website && (
+                  <a href={external.website} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] rounded-full border border-white/10 text-white/40 hover:border-white/30 transition">
+                    <FaGlobe className="text-xs" />
+                    Website
+                  </a>
+                )}
+
+                {external.instagram && (
+                  <a href={external.instagram} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] rounded-full border border-pink-500/20 text-pink-400 hover:border-pink-400 transition">
+                    <FaInstagram className="text-xs" />
+                    Instagram
+                  </a>
+                )}
+
+                {external.twitter && (
+                  <a href={external.twitter} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] rounded-full border border-blue-400/20 text-blue-400 hover:border-blue-400 transition">
+                    <FaTwitter className="text-xs" />
+                    Twitter
+                  </a>
+                )}
+
+                {external.facebook && (
+                  <a href={external.facebook} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] rounded-full border border-blue-600/20 text-blue-500 hover:border-blue-500 transition">
+                    <FaFacebookF className="text-xs" />
+                    Facebook
+                  </a>
+                )}
+
+                {external.youtube && (
+                  <a href={external.youtube} target="_blank" rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-[10px] rounded-full border border-red-500/20 text-red-400 hover:border-red-400 transition">
+                    <FaYoutube className="text-xs" />
+                    YouTube
+                  </a>
+                )}
+
               </div>
             </div>
           )}

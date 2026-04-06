@@ -6,6 +6,22 @@ const PAYMENT_METHODS = [
   { id: "netbanking", label: "Net Banking", icon: "🏦" },
 ];
 
+
+const Field = ({ label, id, type = "text", value, onChange, error, placeholder, className = "" }) => (
+  <div className={className}>
+    <label className="block text-[10px] tracking-[0.2em] uppercase text-white/40 mb-1.5">{label}</label>
+    <input
+      type={type}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      className={`w-full bg-white/3 border rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 outline-none transition-all focus:bg-white/5
+          ${error ? "border-red-500/50 focus:border-red-500" : "border-white/8 focus:border-[#c9a84c]/50"}`}
+    />
+    {error && <p className="text-[10px] text-red-400 mt-1">{error}</p>}
+  </div>
+);
+
 export default function Checkout({ cart, onBack, onConfirm }) {
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [form, setForm] = useState({ name: "", email: "", phone: "", card: "", expiry: "", cvv: "", upi: "" });
@@ -30,24 +46,74 @@ export default function Checkout({ cart, onBack, onConfirm }) {
     return e;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const e = validate();
     setErrors(e);
     if (Object.keys(e).length > 0) return;
+
     setLoading(true);
-    setTimeout(() => {
-      const tickets = cart.map((item) => ({
-        ...item,
-        ticketId: "TKT-" + Math.random().toString(36).substr(2, 8).toUpperCase(),
-        holder: form.name,
+
+    const options = {
+      key: import.meta.env.VITE_RAZOR_API_KEY,
+      amount: total * 100,
+      currency: "INR",
+      name: "STAGEPASS",
+      description: "Ticket Booking",
+
+      handler: function (response) {
+        console.log("✅ PAYMENT SUCCESS", response);
+
+        const tickets = cart.map((item) => ({
+          ...item,
+          ticketId:
+            "TKT-" + Math.random().toString(36).substr(2, 8).toUpperCase(),
+          holder: form.name,
+          email: form.email,
+          paymentId: response.razorpay_payment_id,
+
+       
+          qrData: JSON.stringify({
+            event: item.eventTitle,
+            seat: item.seatId,
+            user: form.name,
+            id: item.id,
+          }),
+
+          issuedAt: new Date().toLocaleString(),
+        }));
+
+        setLoading(false);
+
+      
+        onConfirm(tickets);
+      },
+
+      prefill: {
+        name: form.name,
         email: form.email,
-        qrData: JSON.stringify({ id: item.seatId, event: item.eventTitle, seat: item.seatId, holder: form.name }),
-        issuedAt: new Date().toLocaleString(),
-      }));
+        contact: form.phone,
+      },
+
+      theme: {
+        color: "#c9a84c",
+      },
+
+      modal: {
+        ondismiss: () => setLoading(false),
+      },
+    };
+
+    const rzp = new window.Razorpay(options);
+
+    rzp.on("payment.failed", function (response) {
+      console.error("❌ Payment Failed:", response.error);
+      alert("Payment failed! Try again.");
       setLoading(false);
-      onConfirm(tickets);
-    }, 2000);
+    });
+
+    rzp.open();
   };
+
 
   const formatCard = (v) => v.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim();
   const formatExpiry = (v) => {
@@ -55,20 +121,6 @@ export default function Checkout({ cart, onBack, onConfirm }) {
     return d.length >= 3 ? d.slice(0, 2) + "/" + d.slice(2) : d;
   };
 
-  const Field = ({ label, id, type = "text", value, onChange, error, placeholder, className = "" }) => (
-    <div className={className}>
-      <label className="block text-[10px] tracking-[0.2em] uppercase text-white/40 mb-1.5">{label}</label>
-      <input
-        type={type}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className={`w-full bg-white/3 border rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 outline-none transition-all focus:bg-white/5
-          ${error ? "border-red-500/50 focus:border-red-500" : "border-white/8 focus:border-[#c9a84c]/50"}`}
-      />
-      {error && <p className="text-[10px] text-red-400 mt-1">{error}</p>}
-    </div>
-  );
 
   return (
     <div className="pt-24 pb-20 px-6 max-w-6xl mx-auto">
@@ -76,7 +128,7 @@ export default function Checkout({ cart, onBack, onConfirm }) {
         onClick={onBack}
         className="flex items-center gap-2 text-[11px] tracking-widest uppercase text-white/40 hover:text-[#c9a84c] transition-colors mb-8 mt-4 group"
       >
-        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" /></svg>
         Back to Seats
       </button>
 
@@ -89,7 +141,19 @@ export default function Checkout({ cart, onBack, onConfirm }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Field label="Full Name" value={form.name} onChange={(v) => setForm({ ...form, name: v })} error={errors.name} placeholder="Your full name" className="sm:col-span-2" />
               <Field label="Email" type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} error={errors.email} placeholder="ticket@example.com" />
-              <Field label="Phone" value={form.phone} onChange={(v) => setForm({ ...form, phone: v.replace(/\D/g, "").slice(0, 10) })} error={errors.phone} placeholder="10-digit number" />
+              <Field
+                label="Phone"
+                type="tel"
+                value={form.phone}
+                onChange={(v) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    phone: v.replace(/\D/g, "").slice(0, 10),
+                  }))
+                }
+                error={errors.phone}
+                placeholder="10-digit number"
+              />
             </div>
           </div>
 
@@ -101,11 +165,10 @@ export default function Checkout({ cart, onBack, onConfirm }) {
                 <button
                   key={m.id}
                   onClick={() => setPaymentMethod(m.id)}
-                  className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${
-                    paymentMethod === m.id
-                      ? "border-[#c9a84c]/50 bg-[#c9a84c]/5"
-                      : "border-white/8 hover:border-white/15"
-                  }`}
+                  className={`flex flex-col items-center gap-2 p-3 rounded-xl border transition-all ${paymentMethod === m.id
+                    ? "border-[#c9a84c]/50 bg-[#c9a84c]/5"
+                    : "border-white/8 hover:border-white/15"
+                    }`}
                 >
                   <span className="text-xl">{m.icon}</span>
                   <span className="text-[10px] tracking-wider text-white/50">{m.label}</span>
@@ -191,7 +254,7 @@ export default function Checkout({ cart, onBack, onConfirm }) {
             </button>
 
             <div className="flex items-center justify-center gap-2">
-              <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white/20"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+              <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white/20"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z" /></svg>
               <span className="text-[10px] text-white/20 tracking-wider">256-bit SSL Encrypted</span>
             </div>
           </div>

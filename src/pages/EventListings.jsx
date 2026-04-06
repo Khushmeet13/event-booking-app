@@ -9,15 +9,15 @@ export default function EventListings({ onSelectEvent }) {
   const [genreId, setGenreId] = useState("");
   const isApiKeySet = CONFIG.TICKETMASTER_KEY !== "YOUR_TICKETMASTER_API_KEY";
 
- const searchFn = useCallback(
-  (params) => searchEvents({ 
-    ...params, 
-    countryCode: "IN", 
-    classificationName: "music",
-    startDateTime: new Date().toISOString().split('.')[0] + "Z", // e.g. "2026-04-06T00:00:00Z"
-  }),
-  []
-);
+  const searchFn = useCallback(
+    (params) => searchEvents({
+      ...params,
+      countryCode: "IN",
+      classificationName: "music",
+      startDateTime: new Date().toISOString().split('.')[0] + "Z", // e.g. "2026-04-06T00:00:00Z"
+    }),
+    []
+  );
 
   const { results: events, total, loading, error, initialLoad, search, loadMore, hasMore } =
     usePaginatedSearch(searchFn, { keyword: "", city: "", genreId: "" });
@@ -54,7 +54,7 @@ export default function EventListings({ onSelectEvent }) {
       <div className="mb-8 space-y-4">
         <div className="relative max-w-lg">
           <svg viewBox="0 0 24 24" className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 fill-white/25 pointer-events-none">
-            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            <path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
           </svg>
           <input
             type="text"
@@ -82,11 +82,10 @@ export default function EventListings({ onSelectEvent }) {
               <button
                 key={g.id}
                 onClick={() => handleFilter({ genreId: g.id })}
-                className={`px-3 py-1.5 rounded-full text-[10px] tracking-[0.15em] uppercase transition-all ${
-                  genreId === g.id
+                className={`px-3 py-1.5 rounded-full text-[10px] tracking-[0.15em] uppercase transition-all ${genreId === g.id
                     ? "bg-[#c9a84c] text-black font-bold"
                     : "border border-white/10 text-white/40 hover:border-white/25"
-                }`}
+                  }`}
               >
                 {g.name}
               </button>
@@ -178,12 +177,12 @@ function EventCard({ event, onClick, delay }) {
 
           <div className="flex flex-col gap-1 mb-3">
             <div className="flex items-center gap-1.5 text-[11px] text-white/35">
-              <svg viewBox="0 0 24 24" className="w-3 h-3 fill-current flex-shrink-0"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+              <svg viewBox="0 0 24 24" className="w-3 h-3 fill-current flex-shrink-0"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z" /></svg>
               <span>{event.date}{event.time !== "TBA" ? ` · ${event.time}` : ""}</span>
             </div>
             {event.venue && (
               <div className="flex items-center gap-1.5 text-[11px] text-white/35">
-                <svg viewBox="0 0 24 24" className="w-3 h-3 fill-current flex-shrink-0"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+                <svg viewBox="0 0 24 24" className="w-3 h-3 fill-current flex-shrink-0"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" /></svg>
                 <span className="line-clamp-1">{event.venue}</span>
               </div>
             )}
@@ -201,7 +200,7 @@ function EventCard({ event, onClick, delay }) {
             ) : <span />}
             <button className="flex items-center gap-1.5 text-[11px] tracking-widest uppercase text-[#c9a84c] group-hover:gap-2.5 transition-all">
               Select Seats
-              <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-[#c9a84c]"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/></svg>
+              <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-[#c9a84c]"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z" /></svg>
             </button>
           </div>
         </div>

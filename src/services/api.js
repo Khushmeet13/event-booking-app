@@ -74,7 +74,7 @@ export async function searchEvents({
   keyword = "",
   city = "",
   genre = "",
-   genreId = "",
+  genreId = "",
   //countryCode = "IN",
   startDateTime = "",
   size = 20,
@@ -90,8 +90,8 @@ export async function searchEvents({
   if (keyword) params.keyword = keyword;
   if (city) params.city = city;
   if (genre) params.genreId = genre;
-   if (genreId) params.genreId = genreId;
-    if (startDateTime) params.startDateTime = startDateTime;
+  if (genreId) params.genreId = genreId;
+  if (startDateTime) params.startDateTime = startDateTime;
   //if (countryCode) params.countryCode = countryCode;
 
   try {
@@ -137,13 +137,13 @@ export function normalizeTMEvent(ev) {
     subtitle: attraction?.name || classification?.genre?.name || "",
     date: dateInfo?.localDate
       ? new Date(dateInfo.localDate).toLocaleDateString("en-IN", {
-          year: "numeric", month: "short", day: "numeric",
-        })
+        year: "numeric", month: "short", day: "numeric",
+      })
       : "TBA",
     time: dateInfo?.localTime
       ? new Date(`2000-01-01T${dateInfo.localTime}`).toLocaleTimeString("en-IN", {
-          hour: "2-digit", minute: "2-digit",
-        })
+        hour: "2-digit", minute: "2-digit",
+      })
       : "TBA",
     venue: venue
       ? `${venue.name}, ${venue.city?.name || ""}`
@@ -216,6 +216,8 @@ export async function searchArtists({
     return {
       artists: items.map(normalizeTMArtist),
       total: data?.page?.totalElements || 0,
+      totalPages: data?.page?.totalPages || 0, // ✅ ADD THIS
+      page: data?.page?.number || 0,
     };
   } catch (err) {
     console.warn("searchArtists failed:", err.message);
@@ -246,7 +248,7 @@ export function normalizeTMArtist(a) {
     image: getTMImage(a.images, "16_9") || getTMImage(a.images) || placeholderImage("artist"),
     images: a.images || [],
     url: a.url,
-    upcomingEvents: a.upcomingEvents?.ticketmaster || 0,
+    upcomingEvents: a.upcomingEvents?._total || 0,
     tags: [
       classification?.segment?.name,
       classification?.genre?.name,
@@ -280,6 +282,8 @@ export async function searchVenues({
     return {
       venues: items.map(normalizeTMVenue),
       total: data?.page?.totalElements || 0,
+      totalPages: data?.page?.totalPages || 0, 
+      page: data?.page?.number || 0,
     };
   } catch (err) {
     console.warn("searchVenues failed:", err.message);
@@ -322,8 +326,8 @@ export function normalizeTMVenue(v) {
     capacity: v.generalInfo?.generalRule
       ? "See venue"
       : v.upcomingEvents?.ticketmaster
-      ? `${v.upcomingEvents.ticketmaster} upcoming events`
-      : "",
+        ? `${v.upcomingEvents.ticketmaster} upcoming events`
+        : "",
     upcomingEvents: v.upcomingEvents?.ticketmaster || 0,
     type: v.type || "Venue",
     timezone: v.timezone,
