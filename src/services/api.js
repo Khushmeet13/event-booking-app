@@ -1,19 +1,3 @@
-/**
- * StagePass API Service Layer
- *
- * APIs used:
- *  1. Ticketmaster Discovery API — events, attractions, venues (free, 5000 req/day)
- *     → Get your free key at: https://developer.ticketmaster.com/
- *     → Replace TICKETMASTER_API_KEY below with your key
- *
- *  2. MusicBrainz API — artist metadata, tags, genres
- *     → Completely free, no key needed
- *     → Rate limit: 1 req/sec (we handle this)
- *
- *  3. Last.fm API — artist images, biography, similar artists (free, 5 req/sec)
- *     → Get your free key at: https://www.last.fm/api/account/create
- *     → Replace LASTFM_API_KEY below with your key
- */
 
 // ─── CONFIG ─────────────────────────────────────────────────────────────────
 export const CONFIG = {
@@ -90,7 +74,9 @@ export async function searchEvents({
   keyword = "",
   city = "",
   genre = "",
+   genreId = "",
   //countryCode = "IN",
+  startDateTime = "",
   size = 20,
   page = 0,
   classificationName = "music",
@@ -104,6 +90,8 @@ export async function searchEvents({
   if (keyword) params.keyword = keyword;
   if (city) params.city = city;
   if (genre) params.genreId = genre;
+   if (genreId) params.genreId = genreId;
+    if (startDateTime) params.startDateTime = startDateTime;
   //if (countryCode) params.countryCode = countryCode;
 
   try {

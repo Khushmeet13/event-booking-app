@@ -9,10 +9,15 @@ export default function EventListings({ onSelectEvent }) {
   const [genreId, setGenreId] = useState("");
   const isApiKeySet = CONFIG.TICKETMASTER_KEY !== "YOUR_TICKETMASTER_API_KEY";
 
-  const searchFn = useCallback(
-    (params) => searchEvents({ ...params, countryCode: "IN", classificationName: "music" }),
-    []
-  );
+ const searchFn = useCallback(
+  (params) => searchEvents({ 
+    ...params, 
+    countryCode: "IN", 
+    classificationName: "music",
+    startDateTime: new Date().toISOString().split('.')[0] + "Z", // e.g. "2026-04-06T00:00:00Z"
+  }),
+  []
+);
 
   const { results: events, total, loading, error, initialLoad, search, loadMore, hasMore } =
     usePaginatedSearch(searchFn, { keyword: "", city: "", genreId: "" });
