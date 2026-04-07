@@ -1,5 +1,6 @@
 import { useState } from "react";
 import emailjs from "emailjs-com";
+import QRCode from "qrcode";
 
 const PAYMENT_METHODS = [
   { id: "card", label: "Credit / Debit Card", icon: "💳" },
@@ -12,6 +13,8 @@ const sendEmail = async (tickets, form) => {
   // console.log("FORM EMAIL:", form.email);
 
   try {
+     const qrImage = await QRCode.toDataURL(tickets[0].qrData);
+
     const res = await emailjs.send(
       import.meta.env.VITE_EMAIL_SERVICE_ID,
       import.meta.env.VITE_EMAIL_TEMPLATE_ID,
@@ -23,6 +26,8 @@ const sendEmail = async (tickets, form) => {
         event_time: tickets[0].time,
         seats: tickets.map(t => t.seatId).join(", "),
         payment_id: tickets[0].paymentId,
+
+        qr_code: qrImage,
       },
       import.meta.env.VITE_EMAIL_PUBLIC_KEY
     );
