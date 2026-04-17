@@ -26,12 +26,12 @@ const VALUES = [
 ];
 
 const TIMELINE = [
-  { year: "2020", event: "StagePass founded in a Mumbai apartment by Kavya Menon." },
-  { year: "2021", event: "First 10 venue partnerships. First 1,000 tickets sold." },
-  { year: "2022", event: "Expanded to Delhi and Bangalore. Launched QR entry system." },
-  { year: "2023", event: "Reached 50,000 tickets sold. Series A funding secured." },
-  { year: "2024", event: "Artist dashboard launched. 100+ artists onboarded." },
-  { year: "2025", event: "Present in 8 cities. 120,000+ happy attendees." },
+  { year: "Jan 2025", event: "Project ideation — identified the gap in India's live event ticketing space. Started research and wireframing." },
+  { year: "Feb 2025", event: "Tech stack finalized. React + Tailwind setup done. Core UI components and design system built from scratch." },
+  { year: "Mar 2025", event: "Homepage, Events listing, and Event detail pages completed. QR ticket generation logic implemented." },
+  { year: "Apr 2025", event: "Artist and Venue pages added. Contact form integrated with EmailJS. Mobile responsiveness polished." },
+  { year: "May 2025", event: "Razorpay payment gateway integrated. Secure end-to-end ticket purchasing flow live with UPI, cards, and netbanking support." },
+  { year: "Jun 2025", event: "About page, FAQ, and full dark UI theme finalized. Performance optimizations done. StagePass v1.0 deployed." },
 ];
 
 const FAQS = [
@@ -145,7 +145,7 @@ export default function About() {
       <section className="max-w-7xl mx-auto px-6 mb-24">
         <div className="flex items-center gap-3 mb-10">
           <div className="w-px h-8 bg-[#c9a84c]" />
-          <span className="text-[10px] tracking-[0.4em] text-[#c9a84c] uppercase">Our Journey</span>
+          <span className="text-[10px] tracking-[0.4em] text-[#c9a84c] uppercase">How It Was Built</span>
         </div>
         <div className="relative">
           {/* Line */}
