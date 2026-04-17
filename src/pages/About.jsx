@@ -1,40 +1,6 @@
 import { useState } from "react";
 import emailjs from "@emailjs/browser";
 
-const TEAM = [
-  {
-    name: "Kavya Menon",
-    role: "Founder & CEO",
-    origin: "Chennai",
-    image: "https://images.unsplash.com/photo-1494790108755-2616b612b977?w=400&q=80",
-    bio: "Former concert promoter turned platform builder. Kavya spent a decade booking shows for underground venues before founding StagePass to solve the problem she knew best.",
-    linkedin: "#",
-  },
-  {
-    name: "Arjun Sharma",
-    role: "Chief Technology Officer",
-    origin: "Bangalore",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80",
-    bio: "Arjun previously led engineering at a Series B fintech. He joined StagePass to build ticketing infrastructure that treats both artists and fans with respect.",
-    linkedin: "#",
-  },
-  {
-    name: "Zara Khan",
-    role: "Head of Artist Relations",
-    origin: "Delhi",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80",
-    bio: "A music journalist turned advocate, Zara ensures every artist on StagePass receives fair terms, transparent data, and a platform worthy of their work.",
-    linkedin: "#",
-  },
-  {
-    name: "Dev Patel",
-    role: "Head of Design",
-    origin: "Mumbai",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=80",
-    bio: "Dev's background spans editorial, fashion, and digital. He believes that how a ticket looks and feels is inseparable from the experience it promises.",
-    linkedin: "#",
-  },
-];
 
 const VALUES = [
   {
@@ -206,38 +172,42 @@ export default function About() {
         </div>
       </section>
 
+
       {/* Team */}
       <section className="max-w-7xl mx-auto px-6 mb-24">
         <div className="flex items-center gap-3 mb-10">
           <div className="w-px h-8 bg-[#c9a84c]" />
-          <span className="text-[10px] tracking-[0.4em] text-[#c9a84c] uppercase">The Team</span>
+          <span className="text-[10px] tracking-[0.4em] text-[#c9a84c] uppercase">The Builder</span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {TEAM.map((member, i) => (
-            <div
-              key={member.name}
-              className="animate-fadeUp group"
-              style={{ animationDelay: `${i * 0.08}s` }}
-            >
-              <div className="relative rounded-2xl overflow-hidden h-56 mb-4">
-                <img src={member.image} alt={member.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-transparent to-transparent" />
-                <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button className="w-7 h-7 rounded-full bg-[#0f0f17]/80 border border-white/10 flex items-center justify-center">
-                    <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white/60">
-                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-              <div>
-                <h3 className="font-display text-lg">{member.name}</h3>
-                <p className="text-[10px] tracking-wider text-[#c9a84c]/70 uppercase mb-1">{member.role}</p>
-                <p className="text-xs text-white/30 mb-2">{member.origin}</p>
-                <p className="text-xs text-white/35 leading-relaxed">{member.bio}</p>
+        <div className="flex justify-center">
+          <div className="animate-fadeUp group max-w-xs w-full">
+            <div className="relative rounded-2xl overflow-hidden h-72 mb-4">
+              <img
+                src="/profile-img.png"
+                alt="Khushmeet Saini"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-transparent to-transparent" />
+              <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                <a href="https://www.linkedin.com/in/khushmeet-saini/" target="_blank" rel="noreferrer"
+                  className="w-7 h-7 rounded-full bg-[#0f0f17]/80 border border-white/10 flex items-center justify-center">
+                  <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white/60">
+                    <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
+                  </svg>
+                </a>
               </div>
             </div>
-          ))}
+            <div>
+              <h3 className="font-display text-xl">Khushmeet Saini</h3>
+              <p className="text-[10px] tracking-wider text-[#c9a84c]/70 uppercase mb-1">Founder & Web Developer</p>
+              <p className="text-xs text-white/30 mb-3">Chandigarh</p>
+              <p className="text-xs text-white/35 leading-relaxed">
+                A passionate web developer with a keen eye for design and a love for building seamless digital experiences.
+                Khushmeet crafted StagePass from the ground up — architecting the frontend, engineering the ticketing
+                infrastructure, and shaping every interaction to ensure the platform feels as good as the shows it serves.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 
