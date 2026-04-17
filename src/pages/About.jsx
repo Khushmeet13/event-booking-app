@@ -1,4 +1,5 @@
 import { useState } from "react";
+import emailjs from "@emailjs/browser";
 
 const TEAM = [
   {
@@ -79,13 +80,37 @@ export default function About() {
   const [openFaq, setOpenFaq] = useState(null);
   const [contactForm, setContactForm] = useState({ name: "", email: "", message: "" });
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleContact = () => {
-    if (contactForm.name && contactForm.email && contactForm.message) {
+  const handleContact = async () => {
+    if (!contactForm.name || !contactForm.email || !contactForm.message) return;
+
+    setLoading(true);
+    setError("");
+
+    try {
+      await emailjs.send(
+        import.meta.env.VITE_EMAIL_SERVICE_ID,
+        import.meta.env.VITE_MESSAGE_TEMPLATE_ID,
+        {
+          from_name: contactForm.name,
+          from_email: contactForm.email,
+          message: contactForm.message,
+          email: import.meta.env.VITE_EMAIL
+        },
+        import.meta.env.VITE_EMAIL_PUBLIC_KEY
+      );
       setSubmitted(true);
+    } catch (err) {
+      console.error("Status:", err?.status);
+      console.error("Text:", err?.text);
+      console.error("Full error:", JSON.stringify(err));
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
-
   return (
     <div className="pt-24 pb-20 min-h-screen bg-[#0a0a0f]">
 
@@ -200,7 +225,7 @@ export default function About() {
                 <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button className="w-7 h-7 rounded-full bg-[#0f0f17]/80 border border-white/10 flex items-center justify-center">
                     <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white/60">
-                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+                      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
                     </svg>
                   </button>
                 </div>
@@ -236,7 +261,7 @@ export default function About() {
                 <span className="text-sm text-white/70 font-medium pr-4">{faq.q}</span>
                 <span className={`flex-shrink-0 w-5 h-5 rounded-full border flex items-center justify-center transition-all ${openFaq === i ? "border-[#c9a84c]/40 bg-[#c9a84c]/10 rotate-45" : "border-white/15"}`}>
                   <svg viewBox="0 0 24 24" className={`w-3 h-3 transition-colors ${openFaq === i ? "fill-[#c9a84c]" : "fill-white/30"}`}>
-                    <path d="M19 13H13v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                    <path d="M19 13H13v6h-2v-6H5v-2h6V5h2v6h6v2z" />
                   </svg>
                 </span>
               </button>
@@ -283,7 +308,7 @@ export default function About() {
             {submitted ? (
               <div className="h-full flex flex-col items-center justify-center gap-4 text-center animate-fadeUp">
                 <div className="w-16 h-16 rounded-full bg-[#c9a84c]/10 border border-[#c9a84c]/20 flex items-center justify-center">
-                  <svg viewBox="0 0 24 24" className="w-7 h-7 fill-[#c9a84c]"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                  <svg viewBox="0 0 24 24" className="w-7 h-7 fill-[#c9a84c]"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" /></svg>
                 </div>
                 <h3 className="font-display text-2xl">Message Sent</h3>
                 <p className="text-sm text-white/40">We'll get back to you within 24 hours.</p>
@@ -318,10 +343,15 @@ export default function About() {
                 </div>
                 <button
                   onClick={handleContact}
-                  className="w-full py-3.5 bg-[#c9a84c] text-black text-xs tracking-[0.25em] uppercase font-bold rounded-xl hover:bg-[#dbb95e] transition-colors"
+                  disabled={loading}
+                  className="w-full py-3.5 bg-[#c9a84c] text-black text-xs tracking-[0.25em] uppercase font-bold rounded-xl hover:bg-[#dbb95e] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Send Message
+                  {loading ? "Sending..." : "Send Message"}
                 </button>
+
+                {error && (
+                  <p className="text-xs text-red-400 text-center">{error}</p>
+                )}
               </div>
             )}
           </div>
