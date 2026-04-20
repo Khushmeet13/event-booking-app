@@ -90,7 +90,7 @@ export default function App() {
         {page === "about" && <About />}
 
         <WhatsAppButton
-          phoneNumber={impor.meta.env.VITE_PHONE}
+          phoneNumber={import.meta.env.VITE_PHONE}
         />
       </main>
     </div>
