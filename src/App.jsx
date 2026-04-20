@@ -15,6 +15,7 @@ export default function App() {
   const [cart, setCart] = useState([]);
   const [cartOpen, setCartOpen] = useState(false);
   const [confirmedTickets, setConfirmedTickets] = useState(null);
+  const [whatsappUrl, setWhatsappUrl] = useState(null);
 
   const addToCart = (item) => {
     setCart((prev) => {
@@ -29,11 +30,12 @@ export default function App() {
 
   const removeFromCart = (id) => setCart((prev) => prev.filter((c) => c.id !== id));
 
-  const onCheckout = (tickets) => {
+   const onCheckout = (tickets, waUrl) => {
     setConfirmedTickets(tickets);
+    setWhatsappUrl(waUrl ?? null);
     setCart([]);
     setPage("confirmation");
-  };
+  }
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-[#f0ead6] font-body">
@@ -78,6 +80,7 @@ export default function App() {
         {page === "confirmation" && confirmedTickets && (
           <TicketConfirmation
             tickets={confirmedTickets}
+             whatsappUrl={whatsappUrl}
             onHome={() => setPage("listings")}
           />
         )}
