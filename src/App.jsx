@@ -90,7 +90,7 @@ export default function App() {
         {page === "about" && <About />}
 
         <WhatsAppButton
-          phoneNumber="919877810468"
+          phoneNumber={impor.meta.env.VITE_PHONE}
         />
       </main>
     </div>
