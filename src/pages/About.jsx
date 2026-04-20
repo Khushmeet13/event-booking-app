@@ -203,7 +203,7 @@ export default function About() {
               <p className="text-xs text-white/30 mb-3">Chandigarh</p>
               <p className="text-xs text-white/35 leading-relaxed">
                 A passionate web developer with a keen eye for design and a love for building seamless digital experiences.
-                Khushmeet crafted StagePass from the ground up — architecting the frontend, engineering the ticketing
+                Crafted StagePass from the ground up — architecting the frontend, engineering the ticketing
                 infrastructure, and shaping every interaction to ensure the platform feels as good as the shows it serves.
               </p>
             </div>

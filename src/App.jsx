@@ -8,6 +8,7 @@ import Venues from "./pages/Venues";
 import About from "./pages/About";
 import CartDrawer from "./components/CartDrawer";
 import Navbar from "./components/Navbar";
+import WhatsAppButton from "./components/WhatsAppButton";
 
 export default function App() {
   const [page, setPage] = useState("listings");
@@ -30,7 +31,7 @@ export default function App() {
 
   const removeFromCart = (id) => setCart((prev) => prev.filter((c) => c.id !== id));
 
-   const onCheckout = (tickets, waUrl) => {
+  const onCheckout = (tickets, waUrl) => {
     setConfirmedTickets(tickets);
     setWhatsappUrl(waUrl ?? null);
     setCart([]);
@@ -80,13 +81,17 @@ export default function App() {
         {page === "confirmation" && confirmedTickets && (
           <TicketConfirmation
             tickets={confirmedTickets}
-             whatsappUrl={whatsappUrl}
+            whatsappUrl={whatsappUrl}
             onHome={() => setPage("listings")}
           />
         )}
         {page === "artists" && <Artists />}
         {page === "venues" && <Venues onNavigate={setPage} />}
         {page === "about" && <About />}
+
+        <WhatsAppButton
+          phoneNumber="919877810468"
+        />
       </main>
     </div>
   );
